@@ -4,8 +4,8 @@ import time
 
 def requests_debugger(url, headers, proxies=None, retry=2):
     try:
-        response = requests.get(url=url, headers=headers, proxies=None, timeout=10)  # Change None if needed connect
-        # proxy
+        response = requests.get(url=url, headers=headers, proxies=None, timeout=10)  # Change None to proxies if you
+        # need to connect proxy
         print(f'[SUCCESS] {url} {response.status_code}')  # If the attempt was fortunate, print message
         return response
     except Exception as ex:
