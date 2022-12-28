@@ -1,6 +1,6 @@
 import random
 import time
-import req_deb
+from rest import requests_debugger
 from bs4 import BeautifulSoup
 import csv
 import re
@@ -42,7 +42,7 @@ def main():
     all_hotels_url = []
     for subcategory in subcategories:
         subcategory_url = f'https://roomberi.com/nedvizhimost/{subcategory}'
-        response = req_deb.requests_debugging(url=subcategory_url, headers=headers, retry=2).text
+        response = requests_debugger(url=subcategory_url, headers=headers, retry=2).text
         soup = BeautifulSoup(response, 'lxml')
         try:
             pages = int(soup.find('ul', class_='pagination').find('a', string='Последняя').get('href').split('=')[1])
@@ -54,7 +54,7 @@ def main():
         for i in range(1, pages + 1):
             try:
                 url = f'https://roomberi.com/nedvizhimost/{subcategory}/?page={i}'
-                response = req_deb.requests_debugging(url=url, headers=headers, retry=2).text
+                response = requests_debugger(url=url, headers=headers, retry=2).text
                 soup = BeautifulSoup(response, 'lxml')
                 main_block = soup.find('div', id='products')
                 hotels = main_block.find_all('div', class_='col-sm-12')
@@ -70,7 +70,7 @@ def main():
                     podcategoria = subcategory
 
                     # Gathering data from hotel url
-                    response = req_deb.requests_debugging(url=hotel_url, headers=headers, retry=2).text
+                    response = requests_debugger(url=hotel_url, headers=headers, retry=2).text
                     soup = BeautifulSoup(response, 'lxml')
                     # Description
                     try:
