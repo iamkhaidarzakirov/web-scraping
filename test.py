@@ -1,8 +1,4 @@
-from rest import requests_debugger
-import requests
-from bs4 import BeautifulSoup
 import json
-# test your code here!
 
 
 def test():
