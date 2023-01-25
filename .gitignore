@@ -182,4 +182,11 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 # idea folder, uncomment if you don't need it
-# .idea
+.idea
+
+# My proxies list
+autoall.ru_async/data/proxies.json
+autoall.ru_async/data/RU-proxy-list.txt
+proxies.json
+# Other files
+autoall.ru_async/data/unique_urls.json
