@@ -1,15 +1,14 @@
 import random
 import requests
 from bs4 import BeautifulSoup
-import fake_useragent
+from requirements import *
 import time
 import json
 
 
 def get_data():
-    user_agent = fake_useragent.UserAgent().random
     headers = {
-        'user-agent': user_agent
+
     }
     domain = 'https://www.1zoom.me'
     category_name = 'sweden-cities'
