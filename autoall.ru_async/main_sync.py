@@ -84,8 +84,8 @@ def delete_repeats():
 
 
 if __name__ == '__main__':
-    # For requests module
-    with open('data/proxies.json', 'r', encoding='utf-8') as json_file:
+    # Proxies requests format
+    with open('DATA/proxies.json', 'r', encoding='utf-8') as json_file:
         proxies_sync = json.load(json_file)
     # IF SCRIPT STOPS, WITH TEMP FILE WE'LL CONTINUE FROM STOPPING PLACE
     if not os.path.exists('data/temp.txt'):

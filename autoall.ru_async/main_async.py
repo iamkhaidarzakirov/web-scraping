@@ -1,4 +1,4 @@
-from requirements import headers
+from websiteData import headers
 import aiohttp
 import asyncio
 import json
@@ -121,7 +121,7 @@ if __name__ == '__main__':
                     'Цена',
                 )
             )
-    # JSON file is too large, so I make parts
+    # JSON file is too large — over 150_000 urls, so I make parts
     with open(f'data/unique_urls.json', 'r', encoding='utf-8') as json_file:
         product_list = json.load(json_file)
         task_by_parts = make_parts(product_list)
@@ -135,7 +135,7 @@ if __name__ == '__main__':
         if flag:
             try:
                 # Create proxy list | Why here? If in future all proxies will be blocked, we able to change proxies list unstoping the script
-                with open('data/RU-proxy-list.txt', 'r', encoding='utf-8') as txt_file:
+                with open('DATA/RU-proxy-list.txt', 'r', encoding='utf-8') as txt_file:
                     data = txt_file.readlines()
                     proxies_async = [item.replace('\n', '') for item in data]
                 # Create temp file

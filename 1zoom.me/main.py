@@ -1,15 +1,13 @@
 import random
 import requests
 from bs4 import BeautifulSoup
-from requirements import *
 import time
 import json
+from websiteData import headers
 
 
 def get_data():
-    headers = {
 
-    }
     domain = 'https://www.1zoom.me'
     category_name = 'sweden-cities'
     category_link = f'/en/Sweden/t2/'  # add any category you want to download / simple pagination with loop
