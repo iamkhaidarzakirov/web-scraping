@@ -192,3 +192,4 @@ DATA/proxies.json
 DATA/RU-proxy-list.txt
 # Other files
 autoall.ru_async/data/unique_urls.json
+.gitignore
