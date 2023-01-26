@@ -188,5 +188,7 @@ fabric.properties
 autoall.ru_async/data/proxies.json
 autoall.ru_async/data/RU-proxy-list.txt
 proxies.json
+DATA/proxies.json
+DATA/RU-proxy-list.txt
 # Other files
 autoall.ru_async/data/unique_urls.json
