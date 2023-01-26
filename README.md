@@ -1,1 +1,1 @@
-Hey there! At this repo I publish my web scraping works, to share with community.
+Hey there! In this repository I publish my web scraping scripts, which able to share with community.
