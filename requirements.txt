@@ -1,0 +1,11 @@
+requests
+bs4
+selenium
+undetected-chromedriver
+aiohttp
+asyncio
+pandas
+openpyxl
+Pillow
+pytesseract
+fake-useragent
