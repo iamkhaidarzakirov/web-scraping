@@ -6,12 +6,8 @@ import datetime
 import os
 
 
-def get_new_records():
-    options = uc.options.ChromeOptions()
-    options.add_argument('--headless')
-    with uc.Chrome(options=options) as browser:
-        print(f'[INFO] => BROWSER IS INITIALED SUCCESSFUL')
-        url = f'https://portal.elpts.ru/ncher/api/1/esbkts/search?head=%D0%A2%D0%A1&dateFrom={curr_date}&dateTo={curr_date}&page=1&size=25'
+def get_new_records(browser):
+    def parse_response():
         browser.get(url)
         response = browser.page_source
         content = browser.find_element(by='tag name', value='pre').text
@@ -37,19 +33,39 @@ def get_new_records():
                             info = reader.parse()
                             rows = len(info)
                             start = rows + 1
-                            with pd.ExcelWriter('data/TC_sheet.xlsx', engine='openpyxl', mode='a', if_sheet_exists='overlay') as writer:
+                            with pd.ExcelWriter('data/TC_sheet.xlsx', engine='openpyxl', mode='a',
+                                                if_sheet_exists='overlay') as writer:
                                 df.to_excel(writer, startrow=start, index=False, header=False)
                     with open(temp_file_path, 'a', encoding='utf-8') as file:
                         file.write(unique_number + '\n')
                 else:
                     continue
-            print(f'[INFO] => DATE: {curr_date} HAS ANALYZED')
+            print(f'[INFO] => DATE: {curr_date} PAGE {i} HAS ANALYZED')
         else:
             print(f'[INFO] => NO DATA ON {curr_date}')
-            pass
+            nonlocal check_point
+            check_point = False
+
+    if counter == 1:
+        i = 1
+        check_point = True
+        while True:
+            if check_point:
+                url = f'https://portal.elpts.ru/ncher/api/1/esbkts/search?head=%D0%A2%D0%A1&dateFrom={input_date}&dateTo={curr_date}&page={i}&size=25'
+                parse_response()
+                i += 1
+            else:
+                break
+
+    else:
+        i = 1
+        url = f'https://portal.elpts.ru/ncher/api/1/esbkts/search?head=%D0%A2%D0%A1&dateFrom={curr_date}&dateTo={curr_date}&page=1&size=25'
+        parse_response()
 
 
 if __name__ == '__main__':
+    #
+    input_date = input('Введите дату в формате ГГГГ-ММ-ДД с которой нужно начать сбор: ')
     # Create list to check and delete unusable old date paths
     if not os.path.exists(f'data/parameters.json'):
         with open('data/parameters.json', 'w', encoding='utf-8') as json_file:
@@ -57,27 +73,34 @@ if __name__ == '__main__':
             json.dump(temp_list, json_file, indent=4, ensure_ascii=False)
     with open('data/parameters.json', 'r', encoding='utf-8') as json_file:
         temp_list = json.load(json_file)
+    counter = 1
     while True:
         try:
-            curr_date = str(datetime.date.today().strftime('%Y-%m-%d'))
-            temp_file_path = f'data/temp_{curr_date}.txt'
-            # Check old date temp file
-            if temp_file_path not in temp_list and len(temp_list) == 1:
-                old_temp_path = temp_list[0]
-                os.remove(old_temp_path)
-            # Create new date temp file
-            if not os.path.exists(temp_file_path):
-                with open(temp_file_path, 'w', encoding='utf-8') as txt_file:
-                    txt_file.write('')
-                with open('data/parameters.json', 'w', encoding='utf-8') as json_file:
-                    temp_list = [temp_file_path]
-                    json.dump(temp_list, json_file, indent=4, ensure_ascii=False)
-            with open(temp_file_path, 'r', encoding='utf-8') as txt_file:
-                data = txt_file.readlines()
-                temp = [item.replace('\n', '') for item in data]
-            get_new_records()
-            print('[INFO] => STANDBY MODE 1 MINUTE ')
-            time.sleep(60)
+            options = uc.options.ChromeOptions()
+            options.add_argument('--headless')
+            with uc.Chrome(options=options) as driver:
+                print(f'[INFO] => BROWSER IS INITIALED SUCCESSFUL')
+                curr_date = str(datetime.date.today().strftime('%Y-%m-%d'))
+                temp_file_path = f'data/temp_{curr_date}.txt'
+                # Check old date temp file
+                if curr_date not in temp_list and len(temp_list) == 1:
+                    old_temp_date = temp_list[0]
+                    old_temp_path = f'data/temp_{old_temp_date}.txt'
+                    os.remove(old_temp_path)
+                # Create new date temp file
+                if not os.path.exists(temp_file_path):
+                    with open(temp_file_path, 'w', encoding='utf-8') as txt_file:
+                        txt_file.write('')
+                    with open('data/parameters.json', 'w', encoding='utf-8') as json_file:
+                        temp_list = [curr_date]
+                        json.dump(temp_list, json_file, indent=4, ensure_ascii=False)
+                with open(temp_file_path, 'r', encoding='utf-8') as txt_file:
+                    data = txt_file.readlines()
+                    temp = [item.replace('\n', '') for item in data]
+                get_new_records(driver)
+                counter += 1
+                print('[INFO] => STANDBY MODE 1 MINUTE ')
+                time.sleep(60)
         except Exception as ex:
             print(f'[ERROR] => {ex}')
             time.sleep(30)
