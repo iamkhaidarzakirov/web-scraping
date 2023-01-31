@@ -144,7 +144,7 @@ if __name__ == '__main__':
     # Set a date
     curr_date = datetime.date.today().strftime('%Y_%m_%d')
     # Proxies aiohttp format
-    with open('data/RU-proxy-list.txt', 'r', encoding='utf-8') as txt_file:
+    with open('../DATA/RU-proxy-list.txt', 'r', encoding='utf-8') as txt_file:
         raw_data = txt_file.readlines()
         proxies_async = [item.replace('\n', '') for item in raw_data]
     # Part 1
