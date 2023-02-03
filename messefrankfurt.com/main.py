@@ -3,25 +3,13 @@ import json
 import random
 import time
 import pandas
+from websiteData import headers
 
 
 def get_json():
     i = 1
     while True:
         try:
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0',
-                'Accept': 'application/json, text/plain, */*',
-                'Accept-Language': 'en-US,en;q=0.5',
-                # 'Accept-Encoding': 'gzip, deflate, br',
-                'Origin': 'https://ambiente.messefrankfurt.com',
-                'Connection': 'keep-alive',
-                'Referer': 'https://ambiente.messefrankfurt.com/',
-                'Sec-Fetch-Dest': 'empty',
-                'Sec-Fetch-Mode': 'cors',
-                'Sec-Fetch-Site': 'same-site',
-            }
-
             params = {
                 'language': 'en-GB',
                 'q': '',
@@ -31,7 +19,6 @@ def get_json():
                 'showJumpLabels': 'true',
                 'findEventVariable': 'AMBIENTE',
             }
-
             response = requests.get(
                 'https://exhibitorsearch.messefrankfurt.com/service/esb/2.1/search/exhibitor',
                 params=params,
@@ -61,9 +48,7 @@ def get_data_from_json():
     }
     all_pages_data = []
     while True:
-
         try:
-
             with open(f'data/ambiente_page_{i}_data.json', 'r', encoding='utf-8') as file:
                 response = json.load(file)
             hits = response['result']['hits']
@@ -73,13 +58,11 @@ def get_data_from_json():
                 country = hit['exhibitor']['address']['country']['label']
                 phone = hit['exhibitor']['address']['tel']
                 mail = hit['exhibitor']['address']['email']
-
                 # Collecting data at the table excel
                 data_table['Name of the brand'].append(name)
                 data_table['Mail address'].append(mail)
                 data_table['Phone number'].append(phone)
                 data_table['Country'].append(country)
-
                 # Collecting data to json
                 data_dict['Name of the brand'] = name
                 data_dict['Mail address'] = mail
@@ -88,7 +71,6 @@ def get_data_from_json():
                 all_pages_data.append(data_dict)
                 print(f'[INFO] => PAGE {i} DATA GATHERING IS DONE')
             i += 1
-
         except Exception as ex:
             print(ex)
             break
