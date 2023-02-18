@@ -44,7 +44,7 @@ def get_data(source_url):
 
 if __name__ == '__main__':
     # Proxies requests format
-    with open('data/proxies.json', 'r', encoding='utf-8') as json_file:
+    with open('../DATA/proxies.json', 'r', encoding='utf-8') as json_file:
         proxies_sync = json.load(json_file)
     proxies_iterator = iter(proxies_sync)
     # Temp
