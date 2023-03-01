@@ -7,9 +7,10 @@ from selenium import webdriver
 
 def uc_tester(driver):
     response = driver.page_source
-    # Try to write an HTML file and look what will happen
+    # Try to write response as an HTML file and look what will happen
     with open(f'test/test.html', 'w', encoding='utf-8') as file:
         file.write(response)
+
     # Try to get JSON data from html page source
     # content = driver.find_element(by='tag name', value='pre').text
     # parsed_json = json.loads(content)
