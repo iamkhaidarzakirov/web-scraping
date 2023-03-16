@@ -3,7 +3,7 @@ import os
 import json
 
 
-# 1 This function adds a row into a spreadsheet without rewriting a file
+# 1. This function adds a row into a spreadsheet without rewriting a file
 def add_a_row_to_xlsx(path: str, df: pd.DataFrame, sheet_title: str = 'Sheet1') -> None:
     if not os.path.exists(path):
         df.to_excel(path, sheet_name=sheet_title, index=False)
@@ -21,7 +21,7 @@ def add_a_row_to_xlsx(path: str, df: pd.DataFrame, sheet_title: str = 'Sheet1') 
                     df.to_excel(writer, startrow=0, sheet_name=sheet_title, index=False)
 
 
-# I have written a few functions which created json files with proxies different formats
+# 2. This function creates json files with proxies in different formats
 def create_proxies_json(proxies_format: str, source_path: str, result_path: str) -> None:
     # Open the file with Proxy6.net proxies list
     with open(source_path) as file:

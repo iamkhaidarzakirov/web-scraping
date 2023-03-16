@@ -7,12 +7,12 @@ import datetime
 import json
 
 
-async def website_tester(session: aiohttp.ClientSession, i: int):
+async def website_tester(session: aiohttp.ClientSession, i: int) -> None:
     url = f''
     global proxies_iterator
     try:
         proxy = next(proxies_iterator)
-    except Exception:
+    except StopIteration:
         proxies_iterator = iter(proxies_async)
         proxy = next(proxies_iterator)
     async with session.post(url=url, headers=headers, proxy=proxy) as r:
@@ -24,15 +24,15 @@ async def website_tester(session: aiohttp.ClientSession, i: int):
             file.write(response)
 
 
-async def tasks_resolver(quantity: range = None):
+async def tasks_resolver(quantity: range = None) -> None:
     async with aiohttp.ClientSession() as session:
         tasks = []
-        if attempts:
+        if quantity:
             for i in attempts:
                 task = asyncio.create_task(website_tester(session, i))
                 tasks.append(task)
             await asyncio.gather(*tasks)
-    # When all tasks are finished successful, the flag name is changing
+    # If all tasks are finished successful, the flag name is changing
     global flag
     flag = False
 
@@ -58,6 +58,3 @@ if __name__ == '__main__':
                 continue
         else:
             break
-
-
-

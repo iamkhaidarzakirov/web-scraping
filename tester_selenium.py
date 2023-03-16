@@ -5,7 +5,7 @@ import time
 from selenium import webdriver
 
 
-def uc_tester(driver):
+def uc_tester(driver: uc.Chrome) -> None:
     response = driver.page_source
     # Try to write response as an HTML file and look what will happen
     with open(f'test/test.html', 'w', encoding='utf-8') as file:
