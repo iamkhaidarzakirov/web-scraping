@@ -8,7 +8,7 @@ import json
 
 
 async def website_tester(session: aiohttp.ClientSession, i: int):
-    url = f'https://www.vk.com'
+    url = f''
     global proxies_iterator
     try:
         proxy = next(proxies_iterator)
@@ -24,7 +24,7 @@ async def website_tester(session: aiohttp.ClientSession, i: int):
             file.write(response)
 
 
-async def tasks_resolver(quantity: range = None) -> None:
+async def tasks_resolver(quantity: range = None):
     async with aiohttp.ClientSession() as session:
         tasks = []
         if attempts:
@@ -41,9 +41,8 @@ if __name__ == '__main__':
     # Set a date
     curr_date = datetime.date.today().strftime('%Y_%m_%d')
     # Proxies aiohttp format
-    with open('data/ru-proxies-list.txt', 'r', encoding='utf-8') as txt_file:
-        raw_data = txt_file.readlines()
-        proxies_async = [item.replace('\n', '') for item in raw_data]
+    with open('DATA/ru-proxies-aiohttp.json', 'r', encoding='utf-8') as json_file:
+        proxies_async = json.load(json_file)
         proxies_iterator = iter(proxies_async)
     # Check
     attempts = range(1, 3)

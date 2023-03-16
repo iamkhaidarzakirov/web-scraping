@@ -6,12 +6,19 @@ from websiteData import headers, cookies
 from bs4 import BeautifulSoup
 
 
-def get_urls():
-    # Pages count in a current date
+def get_urls() -> None:
+    # cause the data project was one-time, the number of pages have specified manually
     pages_count = 22
+    global proxies_iterator
     for i in range(1, pages_count + 1):
-        proxy = random.choice(proxies_sync)
+        # Take next proxy in list for each new request
+        try:
+            proxy = next(proxies_iterator)
+        except StopIteration:
+            proxies_iterator = iter(proxies_sync)
+            proxy = next(proxies_iterator)
         domain = 'https://www.intersolar.de'
+        # API
         url = 'https://www.intersolar.de/search/execute'
         json_data = {
             'page': f'{i}',
@@ -35,8 +42,9 @@ def get_urls():
 
 if __name__ == '__main__':
     # Proxies requests format
-    with open('../DATA/proxies.json', 'r', encoding='utf-8') as json_file:
+    with open('../DATA/ru-proxies-requests.json', 'r', encoding='utf-8') as json_file:
         proxies_sync = json.load(json_file)
+        proxies_iterator = iter(proxies_sync)
     all_items = []
     get_urls()
     with open('data/all_items.json', 'w', encoding='utf-8') as json_file:

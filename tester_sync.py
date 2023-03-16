@@ -6,10 +6,15 @@ import time
 from websiteData import headers
 
 
-def web_site_tester():
+def website_tester():
     for i in range(1, 76):
         url = f''
-        proxy = random.choice(proxies_sync)
+        global proxies_iterator
+        try:
+            proxy = next(proxies_iterator)
+        except Exception:
+            proxies_iterator = iter(proxies_sync)
+            proxy = next(proxies_iterator)
         response = requests.post(url=url, headers=headers)
         print(f'{response.status_code} WITH {proxy}')
         # Try to write an HTML file and look what will happen
@@ -20,9 +25,10 @@ def web_site_tester():
 
 if __name__ == '__main__':
     # Proxies requests format
-    with open('DATA/proxies.json', 'r', encoding='utf-8') as json_file:
+    with open('DATA/ru-proxies-requests.json', 'r', encoding='utf-8') as json_file:
         proxies_sync = json.load(json_file)
+        proxies_iterator = iter(proxies_sync)
 
     # Set parameters and let's go!
-    web_site_tester()
+    website_tester()
 
