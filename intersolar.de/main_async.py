@@ -10,15 +10,15 @@ import pandas as pd
 import datetime
 
 
-async def get_urls(session, i):
+async def get_urls(session: aiohttp.ClientSession, i: int) -> None:
     ...
 
 
-async def get_images(session, url):
+async def get_images(session: aiohttp.ClientSession, url: str) -> None:
     ...
 
 
-async def get_data(session, url):
+async def get_data(session: aiohttp.ClientSession, url: str) -> None:
     if url not in temp:
         proxy = random.choice(proxies_async)
         async with session.get(url=url, headers=headers, proxy=proxy) as r:
@@ -81,8 +81,10 @@ async def get_data(session, url):
                 file.write(url + '\n')
 
 
-# Function may take different arguments. Depending on what argument it takes, a certain function will be executed
-async def tasks_resolver(urls_list=None, pagination=None, images_urls=None):
+async def tasks_resolver(urls_list: list = None, pagination: range = None, images_urls: list = None):
+    """Function to gather tasks. It may take different arguments. Depending on what argument it takes,
+    a certain function will be executed"""
+
     async with aiohttp.ClientSession() as session:
         tasks = []
         if urls_list:
@@ -100,6 +102,7 @@ async def tasks_resolver(urls_list=None, pagination=None, images_urls=None):
                 task = asyncio.create_task(get_images(session, url))
                 tasks.append(task)
             await asyncio.gather(*tasks)
+    # When all tasks are done, you need to change the global flag value to exit from infinite loop
     global flag
     flag = False
 
@@ -120,7 +123,7 @@ if __name__ == '__main__':
     while True:
         if flag:
             try:
-                # We need to open temp file and read it as list
+                # You need to open temp file and read it as list
                 with open('data/temp.txt', 'r', encoding='utf-8') as txt_file:
                     raw_data = txt_file.readlines()
                     temp = [item.replace('\n', '') for item in raw_data]

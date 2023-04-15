@@ -1,24 +1,19 @@
 import requests
 import json
-import random
 import time
 from websiteData import headers, cookies
 from bs4 import BeautifulSoup
 
 
 def get_urls() -> None:
-    # cause the data project was one-time, the number of pages have specified manually
+    """Function gathers all products urls, iterating over each page in loop"""
+
+    # Because it is one-time project, the number of pages have specified manually
     pages_count = 22
-    global proxies_iterator
+
     for i in range(1, pages_count + 1):
-        # Take next proxy in list for each new request
-        try:
-            proxy = next(proxies_iterator)
-        except StopIteration:
-            proxies_iterator = iter(proxies_sync)
-            proxy = next(proxies_iterator)
         domain = 'https://www.intersolar.de'
-        # API
+        # API REQUEST DATA
         url = 'https://www.intersolar.de/search/execute'
         json_data = {
             'page': f'{i}',
@@ -41,10 +36,6 @@ def get_urls() -> None:
 
 
 if __name__ == '__main__':
-    # Proxies requests format
-    with open('../DATA/ru-proxies-requests.json', 'r', encoding='utf-8') as json_file:
-        proxies_sync = json.load(json_file)
-        proxies_iterator = iter(proxies_sync)
     all_items = []
     get_urls()
     with open('data/all_items.json', 'w', encoding='utf-8') as json_file:
