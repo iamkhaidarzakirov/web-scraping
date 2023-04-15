@@ -9,7 +9,6 @@ import json
 async def website_tester(session: aiohttp.ClientSession, i: int) -> None:
     """Function tests the specified website, sending many requests"""
 
-    # Do not forget set a URL
     url = f''
     global have_proxies
     if have_proxies:
@@ -28,7 +27,7 @@ async def website_tester(session: aiohttp.ClientSession, i: int) -> None:
         response = await r.text()
         soup = BeautifulSoup(response, 'lxml')
         print(soup.title)
-        # Set a required parameter
+        # Check parameter
         iswriting = False
         if iswriting:
             # You need try to save a page's source to see what have responded to request
