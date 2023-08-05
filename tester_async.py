@@ -2,7 +2,6 @@ import asyncio
 import aiohttp
 import time
 from bs4 import BeautifulSoup
-from websiteData import headers
 import json
 
 
@@ -28,15 +27,15 @@ async def website_tester(session: aiohttp.ClientSession, i: int) -> None:
         soup = BeautifulSoup(response, 'lxml')
         print(soup.title)
         # Check parameter
-        iswriting = False
-        if iswriting:
+        to_write = False
+        if to_write:
             # You need try to save a page's source to see what have responded to request
             with open(f'test/test.html', 'w', encoding='utf-8') as file:
                 file.write(response)
 
 
 async def tasks_resolver(quantity: range = None) -> None:
-    """Function to gather tasks."""
+    """"""
 
     async with aiohttp.ClientSession() as session:
         tasks = []
@@ -45,7 +44,7 @@ async def tasks_resolver(quantity: range = None) -> None:
                 task = asyncio.create_task(website_tester(session, i))
                 tasks.append(task)
             await asyncio.gather(*tasks)
-    # When all tasks are done, you need to change the global flag value to exit from infinite loop
+
     global flag
     flag = False
 

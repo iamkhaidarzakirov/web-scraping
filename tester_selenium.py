@@ -20,7 +20,7 @@ def uc_tester(driver: uc.Chrome) -> None:
             with open(f'test/test.html', 'w', encoding='utf-8') as file:
                 file.write(response)
         if isjson:
-            # Try to get JSON data from html page source
+            # Try to get JSON config from html page source
             content = driver.find_element(by='tag name', value='pre').text
             parsed_json = json.loads(content)
             with open(f'test/test.json', 'w', encoding='utf-8') as file:
