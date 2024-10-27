@@ -38,7 +38,8 @@ class BaseScrapper:
                 else:
                     with pd.ExcelWriter(path, mode='a', engine='openpyxl', if_sheet_exists='overlay') as writer:
                         df.to_excel(writer, startrow=0, sheet_name=sheet_title, index=False)
-
+    
+    @staticmethod
     def del_special_symbols(some_string: str) -> str:
         """Delete all special symbols in string using re module"""
 
