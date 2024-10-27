@@ -3,6 +3,7 @@ import logging.config
 from pathlib import Path
 from selenium import webdriver
 import os
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 # Project paths
@@ -47,6 +48,17 @@ logging.config.dictConfig(log_config)
 
 # SELENIUM
 HEADLESS = config("HEADLESS") == "True"
+CHROME_DRIVER_PATH = ChromeDriverManager().install()
 
 # SELENIUM OPTIONS 
-OPTIONS = webdriver.ChromeOptions()
+options = webdriver.ChromeOptions()
+if HEADLESS:
+    options.add_argument('--headless')
+options.add_argument('--ignore-ssl-errors')
+options.add_argument("--start-maximized")
+options.add_argument('--disable-gpu')
+options.add_argument('--disable-dev-shm-usage')
+options.add_argument('--no-sandbox')
+options.add_argument('--ignore-certificate-errors')
+options.add_argument("--disable-extensions")
+options.add_argument('--disable-blink-features=AutomationControlled')

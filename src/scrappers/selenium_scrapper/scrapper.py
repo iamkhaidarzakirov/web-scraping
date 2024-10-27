@@ -1,9 +1,11 @@
 import json
 import os
+import random
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+import time
 from typing import List, Dict
-from webdriver_manager.chrome import ChromeDriverManager
+
 from custom_exceptions import exceptions
 from config import settings
 from client.headers import json_headers, html_headers
@@ -14,7 +16,7 @@ class SeleniumScrapper(BaseScrapper):
     """Create browser scrapper here"""
     def __init__(self, **kwargs) -> None:
         super().__init__()
-        self._options = settings.OPTIONS
+        self._options = webdriver.ChromeOptions() 
         self._session = None
         self._session_params = kwargs
     
@@ -27,14 +29,25 @@ class SeleniumScrapper(BaseScrapper):
         return self
     
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if self._session is not None:
-            self._session.close()
-            self.logger.info(f"Session closed: {self._session} ")
-            self._session = None
+        self.close_session()
     
     def create_session(self, **kwargs):
         if self._session is None:
-            self._session = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-            self.session.maximize_window()
+            if kwargs.get("proxy") is not None:
+                proxy = kwargs["proxy"]
+                self.logger.info(f"BROWSER USE PROXY: [{proxy}] IN THIS SESSION")
+                self._options.add_argument(f"--proxy-server={proxy}")
+
+            for option in settings.options.arguments:
+                self.logger.debug(f"Add an extra option to the session: [{option}]")
+                self._options.add_argument(option) 
+
+            self._session = webdriver.Chrome(service=Service(executable_path=settings.CHROME_DRIVER_PATH), options=self._options)
             self.logger.info(f"Session created: {self._session}")
+    
+    def close_session(self):
+        if self._session is not None:
+            self._session.quit()
+            self.logger.info(f"Session closed: {self._session} ")
+            self._session = None
         

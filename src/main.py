@@ -23,10 +23,8 @@ def perform_sync(*args, **kwargs):
 
 def perform_browser(*args, **kwargs) -> None:
     """Manage browser scrapper here"""
-    
-    with SeleniumScrapper(headless=settings.HEADLESS, **kwargs) as scrapper:
-        scrapper.session.get("https://example.org")
-        time.sleep(5)
+    with SeleniumScrapper(**kwargs) as scrapper: # Initialize a new browser session with any params as kwargs
+        pass
             
 
 def main() -> None:
