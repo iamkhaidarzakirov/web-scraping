@@ -6,7 +6,7 @@ from config.settings import PROXIES_DIR
 from custom_exceptions.exceptions import UndefinedProxiesError
 
 class ProxiesHelper:
-    def load_proxies(self, type: Literal["requests", "aiohttp", "webdriver"], country: Literal["eu", "ru"]) -> List:
+    def load_proxies(self, type: Literal["httpx", "webdriver"], country: Literal["eu", "ru"]) -> List:
         file_path = os.path.join(PROXIES_DIR, country.upper(), f"{country}_proxies_{type}.json")
         try:
             with open(file_path, "r", encoding="utf-8") as json_file:
