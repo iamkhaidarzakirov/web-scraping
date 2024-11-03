@@ -28,19 +28,19 @@ class HttpxScrapper(BaseScrapper):
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self._session is not None:
             self._session.close()
-            self.logger.info(f"Closed sync session: {self._session}")
+            self.logger.info(f"Close sync session: {self._session}")
             self._session = None
 
     async def __aenter__(self):
         if self._session is None:
             self._session = httpx.AsyncClient()
-            self.logger.info(f"Created a new async session: {self._session}")
+            self.logger.info(f"Create a new async session: {self._session}")
         return self
     
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if self._session is not None:
             await self._session.aclose()
-            self.logger.info(f"Closed async session: {self._session}")
+            self.logger.info(f"Close async session: {self._session}")
             self._session = None
     
     # Async part

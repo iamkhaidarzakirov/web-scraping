@@ -1,7 +1,6 @@
 import logging
 import os
 import pandas as pd
-import re
 
 from helpers.captcha_helper.captcha_helper import CaptchaHelper
 from helpers.proxies_helper.proxies_helper import ProxiesHelper
@@ -38,10 +37,4 @@ class BaseScrapper:
                 else:
                     with pd.ExcelWriter(path, mode='a', engine='openpyxl', if_sheet_exists='overlay') as writer:
                         df.to_excel(writer, startrow=0, sheet_name=sheet_title, index=False)
-    
-    @staticmethod
-    def del_special_symbols(some_string: str) -> str:
-        """Delete all special symbols in string using re module"""
 
-        edited_string = re.sub(r"[^\w\s]+|\d+", r'', string=some_string).strip()
-        return edited_string

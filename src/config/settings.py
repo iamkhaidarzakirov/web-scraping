@@ -5,7 +5,6 @@ from selenium import webdriver
 import os
 from webdriver_manager.chrome import ChromeDriverManager
 
-
 # Project paths
 CONTAINER_DIR = Path(__file__).resolve().parent.parent.parent 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,6 +17,8 @@ SHEETS_DIR = os.path.join(BASE_DIR, 'data/spreadsheets')
 
 # dotenv
 config = Config(RepositoryEnv(f"{CONTAINER_DIR}/.env"))
+
+CPU_COUNT = int(config("CPU_COUNT", 1))
 
 # logging
 log_config = {

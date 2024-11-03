@@ -56,3 +56,9 @@ class SeleniumScrapper(BaseScrapper):
             self._session.quit()
             self.logger.info(f"Session closed: {self._session} ")
             self._session = None
+
+    def get_data(self, context: List[str]):
+        for url in context:
+            self.session.get(url)
+            # Data scraping logic
+            self.logger.info(f"SUCCESS: [{url}]")
