@@ -11,7 +11,6 @@ from fake_useragent import UserAgent
 
 from custom_exceptions import exceptions
 from config import settings
-from client.headers import json_headers, html_headers
 from scrappers.base_scrapper.scrapper import BaseScrapper
 
 

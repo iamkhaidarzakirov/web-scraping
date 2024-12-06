@@ -1,13 +1,7 @@
-# default json headers / change or add new header if the situation requires
-json_headers = {
-    "Accept": "*/*",
-    "Content-Type": "application/json",
-    "User-Agent": "",
+# default headers / change or add new header if the situation requires
 
-}
-
-# default html headers
-html_headers = {
+base_headers = {
     "Accept": "*/*",
     "User-Agent": "",
+
 }

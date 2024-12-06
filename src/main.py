@@ -19,15 +19,16 @@ async def perform_async(*args, **kwargs) -> None:
     """Manage async scrapper here"""
     urls = ["https://example.org", "https://tryhackme.com"]
 
-    async with HttpxScrapper() as scrapper:
+    async with HttpxScrapper(platform="linux") as scrapper:
         await scrapper.schedule_tasks(context=urls, coroutine=scrapper.atest_status)
 
 
 def perform_sync(*args, **kwargs):
     """Manage sync scrapper here"""
-    with HttpxScrapper() as scrapper:
+    with HttpxScrapper(platform="linux") as scrapper:
         scrapper.test_status("https://www.example.org")
-
+        scrapper.test_html_response("https://www.example.org")
+        
 
 def perform_browser(*args, **kwargs) -> None:
     """Manage browser scrapper here"""
