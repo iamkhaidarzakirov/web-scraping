@@ -69,3 +69,7 @@ options.add_argument('--no-sandbox')
 options.add_argument('--ignore-certificate-errors')
 options.add_argument("--disable-extensions")
 options.add_argument('--disable-blink-features=AutomationControlled')
+
+# CAPTCHA SOLVERS API
+TWOCAPTCHA_API_KEY = config("TWOCAPTCHA_API_KEY")
+CAPSOLVER_API_KEY=config("CAPSOLVER_API_KEY")

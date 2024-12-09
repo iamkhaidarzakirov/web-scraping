@@ -1,63 +1,52 @@
 import json
 import os
 import random
-from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
 import time
 from typing import List, Dict
+
 from fake_useragent import UserAgent
+import ipdb
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from custom_exceptions import exceptions
 from config import settings
+from helpers.selenium_helper.selenium_helper import SeleniumHelper
 from scrappers.base_scrapper.scrapper import BaseScrapper
 
 
-class SeleniumScrapper(BaseScrapper):
+class SeleniumScrapper(BaseScrapper, SeleniumHelper):
     """Create browser scrapper here"""
     def __init__(self, **kwargs) -> None:
-        super().__init__()
-        self._options = webdriver.ChromeOptions()
-        self._session_params = kwargs
-        self._session = None
-        self._actions = None
+        super().__init__()  # Do not forget, super() calls just the first BaseScraper constructor
+        SeleniumHelper.__init__(self, **kwargs) # If we need use the both constructors, we need call it explicitly
+    
+    def test_recaptcha_solver(self, url: str):
+        self.logger.info("Test recaptcha solver...")
+
+        self.session.get(url)
+        time.sleep(random.randrange(2, 5))
+
+        try:
+            WebDriverWait(self.session, 15).until(
+            EC.presence_of_element_located((By.XPATH, "//iframe[contains(@src, 'google.com/recaptcha')]"))
+            )
+        except TimeoutError:
+            self.logger.error("Captcha had not found")
+        else:
+            self.logger.info("Captcha has found")
+
+            sitekey = self.session.find_element(By.ID, "g-recaptcha").get_attribute("data-sitekey")
+            self.logger.info(f"Sitekey found: {sitekey}")
+            time.sleep(2)
+            
+            token = self.captcha_helper.solve_recaptcha_2capthca(sitekey=sitekey, url=url)
+            submit = self.session.find_element(By.XPATH, "//button[contains(@data-action,'demo_action')]")
+
+            self.send_recaptcha_token(token=token, submit=submit)
+            time.sleep(random.randrange(1, 3))
         
-    
-    @property
-    def session(self):
-        return self._session
-
-    def __enter__(self):
-        self.create_session(**self._session_params)
-        return self
-    
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close_session()
-    
-    def create_session(self, **kwargs):
-        if self._session is None:
-            if kwargs.get("proxy") is not None:
-                proxy = kwargs["proxy"]
-                self.logger.info(f"BROWSER USE PROXY: [{proxy}] IN THIS SESSION")
-                self._options.add_argument(f"--proxy-server={proxy}")
-
-            for option in settings.options.arguments:
-                self.logger.debug(f"Add an extra option to the session: [{option}]")
-                self._options.add_argument(option) 
-
-            self._session = webdriver.Chrome(service=Service(executable_path=settings.CHROME_DRIVER_PATH), options=self._options)
-            self._actions = ActionChains(self._session)
-            self.logger.info(f"Session created: {self._session}")
-    
-    def close_session(self):
-        if self._session is not None:
-            self._session.quit()
-            self.logger.info(f"Session closed: {self._session} ")
-            self._session = None
-
-    def get_data(self, context: List[str]):
-        for url in context:
-            self.session.get(url)
-            # Data scraping logic
-            self.logger.info(f"SUCCESS: [{url}]")
+        self.logger.info("After captcha block ")

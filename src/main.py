@@ -23,20 +23,30 @@ async def perform_async(*args, **kwargs) -> None:
         await scrapper.schedule_tasks(context=urls, coroutine=scrapper.atest_status)
 
 
-def perform_sync(*args, **kwargs):
+def perform_sync(url=None, urls=None, *args, **kwargs, ):
     """Manage sync scrapper here"""
+    if url is None and urls is None:
+        raise AttributeError("You must provide an url or urls")
+    
+    if urls is None:
+        urls = []
+    
+    if url is not None:
+        urls.append(url)
+
     with HttpxScrapper(platform="linux") as scrapper:
-        scrapper.test_status("https://www.example.org")
-        scrapper.test_html_response("https://www.example.org")
+        for url in urls:
+            scrapper.test_status(url)
+            # scrapper.test_html_response("https://www.example.org")
         
 
-def perform_browser(*args, **kwargs) -> None:
+def perform_selenium(**kwargs) -> None:
     """Manage browser scrapper here"""
-    with SeleniumScrapper(**kwargs) as scrapper: # Initialize a new browser session with any params as kwargs
-        scrapper.get_data(**kwargs)
+    with SeleniumScrapper() as scrapper: # Initialize a new browser session with any params as kwargs
+        scrapper.test_recaptcha_solver(kwargs.get("url"))
 
 
-def parallel_browser(path: str):
+def parallel_selenium(path: str):
     if os.path.exists(path):
         with open(path) as json_file:
             urls = json.load(json_file)
@@ -47,7 +57,7 @@ def parallel_browser(path: str):
         chunk_size = ceil(len(urls) / processes_count)
         tasks = []
         for chunk in chunk_list(data=urls, chunk_size=chunk_size):
-                p = Process(target=perform_browser, kwargs={"context": chunk})
+                p = Process(target=perform_selenium, kwargs={"context": chunk})
                 tasks.append(p)
                 p.start()
             
@@ -59,8 +69,9 @@ def parallel_browser(path: str):
 def main() -> None:
     """Run scrappers here"""
     # asyncio.run(perform_async())
-    # perform_sync()
-    # parallel_browser(path=os.path.join(settings.JSON_DIR, "urls.json"))
+    # perform_sync("https://example.org")
+    # parallel_selenium(path=os.path.join(settings.JSON_DIR, "urls.json"))
+    perform_selenium(url="https://rucaptcha.com/demo/recaptcha-v2")
 
 
 if __name__ == '__main__':

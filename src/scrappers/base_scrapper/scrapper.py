@@ -1,13 +1,15 @@
 import logging
 import os
+import random
+import time
 
 from openpyxl.styles import Font, Border, Side
 import pandas as pd
 
+from config import settings
 from helpers.captcha_helper.captcha_helper import CaptchaHelper
 from helpers.proxies_helper.proxies_helper import ProxiesHelper
 from helpers.pytesseract_helper.pytesseract_helper import PytesseractHelper
-from config import settings
 
 
 class BaseScrapper:
@@ -15,7 +17,7 @@ class BaseScrapper:
         self.proxies_helper = ProxiesHelper()
         self.captcha_helper = CaptchaHelper()
         self.pytesseract_helper = PytesseractHelper()
-        self.logger =  logging.getLogger("streamLogger")
+        self.logger = logging.getLogger("streamLogger")
     
     def add_rows_to_xlsx(self, file_name: str, source: dict, sheet_title: str = 'Sheet1') -> None:
         """
@@ -75,3 +77,4 @@ class BaseScrapper:
                 else:
                     self.logger.info(f"CREATE NEW SHEET IN EXISTING FILE: [{sheet_title}]")
                     df.to_excel(writer, startrow=0, sheet_name=sheet_title, index=False)
+ 
